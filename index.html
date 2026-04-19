@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-theme="lilac">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f3fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lilac Study">
+  <title>Lilac Study</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/app-icon-192.png">
+  <link rel="apple-touch-icon" href="assets/app-icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <img src="assets/app-icon-192.png" alt="" class="brand-mark" width="44" height="44">
+        <div>
+          <h1>Lilac Study</h1>
+          <p>Revision rhythm</p>
+        </div>
+      </div>
+
+      <div class="header-tools">
+        <div class="timer-pill" aria-live="polite">
+          <span class="timer-label">Focus</span>
+          <strong id="timerNow">0:00:00</strong>
+          <span id="timerTotal">Total 0.00h</span>
+        </div>
+        <button id="timerToggle" class="primary-button" type="button">Start</button>
+        <select id="themeSelect" class="select-control" aria-label="Theme">
+          <option value="lilac">Lilac</option>
+          <option value="graphite">Graphite</option>
+          <option value="mint">Mint</option>
+          <option value="rose">Rose</option>
+        </select>
+        <button id="installButton" class="ghost-button hidden" type="button">Install</button>
+      </div>
+    </header>
+
+    <nav class="tab-bar" aria-label="Main sections">
+      <button class="tab-button is-active" type="button" data-view="planner">Planner</button>
+      <button class="tab-button" type="button" data-view="history">History</button>
+      <button class="tab-button" type="button" data-view="insights">Insights</button>
+      <button class="tab-button" type="button" data-view="notes">Notes</button>
+      <button class="tab-button" type="button" data-view="data">Data</button>
+    </nav>
+
+    <main>
+      <section id="plannerView" class="view is-active" aria-labelledby="plannerTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h2 id="plannerTitle">Plan, revise, repeat</h2>
+          </div>
+          <div id="todaySummary" class="summary-line"></div>
+        </div>
+
+        <form id="taskForm" class="composer">
+          <div class="field-group task-title-field">
+            <label for="taskTitle">Task</label>
+            <input id="taskTitle" name="taskTitle" autocomplete="off" placeholder="What are you studying?">
+          </div>
+          <div class="field-group">
+            <label for="taskKind">Type</label>
+            <select id="taskKind" name="taskKind">
+              <option value="review">Revision</option>
+              <option value="once">One-time</option>
+            </select>
+          </div>
+          <div class="field-group" id="dateField">
+            <label for="taskDate">Date</label>
+            <input id="taskDate" name="taskDate" type="date">
+          </div>
+          <button class="primary-button" type="submit">Add</button>
+          <div id="taskFeedback" class="form-feedback" aria-live="polite"></div>
+        </form>
+
+        <div id="statGrid" class="stat-grid"></div>
+
+        <section class="today-queue" aria-labelledby="queueTitle">
+          <div class="subsection-title">
+            <h3 id="queueTitle">Due now</h3>
+            <span id="queueCount"></span>
+          </div>
+          <div id="dueQueue" class="queue-list"></div>
+        </section>
+
+        <div class="calendar-toolbar">
+          <div>
+            <p class="eyebrow">Calendar</p>
+            <h3>Scroll across days</h3>
+          </div>
+          <div class="toolbar-actions">
+            <button class="ghost-button" type="button" id="scrollOlder">Older</button>
+            <button class="ghost-button" type="button" id="scrollToday">Today</button>
+            <button class="ghost-button" type="button" id="scrollNewer">Newer</button>
+          </div>
+        </div>
+        <div id="calendarScroller" class="calendar-strip" tabindex="0" aria-label="Scrollable study calendar"></div>
+      </section>
+
+      <section id="historyView" class="view" aria-labelledby="historyTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h2 id="historyTitle">Older days</h2>
+          </div>
+          <div class="segmented" role="group" aria-label="History range">
+            <button type="button" data-range="30" class="is-active">30d</button>
+            <button type="button" data-range="90">90d</button>
+            <button type="button" data-range="365">1y</button>
+          </div>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section id="insightsView" class="view" aria-labelledby="insightsTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Progress</p>
+            <h2 id="insightsTitle">Study pulse</h2>
+          </div>
+        </div>
+        <div id="insightGrid" class="stat-grid"></div>
+        <section class="analytics-section">
+          <div class="subsection-title">
+            <h3>Past 30 days</h3>
+            <span id="chartTotal"></span>
+          </div>
+          <div id="studyChart" class="study-chart" aria-label="Study time chart"></div>
+        </section>
+        <section class="analytics-section">
+          <div class="subsection-title">
+            <h3>Completed</h3>
+            <span id="completedCount"></span>
+          </div>
+          <div id="completedList" class="compact-list"></div>
+        </section>
+      </section>
+
+      <section id="notesView" class="view" aria-labelledby="notesTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Notebook</p>
+            <h2 id="notesTitle">Notes and sketches</h2>
+          </div>
+        </div>
+        <section class="notes-layout">
+          <div class="editor-panel">
+            <div class="note-toolbar" aria-label="Note formatting">
+              <button type="button" data-command="bold">Bold</button>
+              <button type="button" data-command="italic">Italic</button>
+              <button type="button" data-command="underline">Underline</button>
+              <button type="button" id="noteLink">Link</button>
+              <label class="toolbar-file">
+                Image
+                <input id="noteImage" type="file" accept="image/*">
+              </label>
+            </div>
+            <div id="notesEditor" class="notes-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Keep formulas, summaries, links, and images here."></div>
+          </div>
+
+          <div class="drawing-panel">
+            <div class="subsection-title">
+              <h3>Drawing pad</h3>
+              <button type="button" class="ghost-button" id="clearDrawing">Clear</button>
+            </div>
+            <canvas id="drawingCanvas" width="1200" height="520" aria-label="Drawing pad"></canvas>
+          </div>
+        </section>
+      </section>
+
+      <section id="dataView" class="view" aria-labelledby="dataTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Local</p>
+            <h2 id="dataTitle">Device data</h2>
+          </div>
+        </div>
+        <div class="data-actions">
+          <button id="exportData" type="button" class="primary-button">Export backup</button>
+          <label class="ghost-button file-button">
+            Import backup
+            <input id="importData" type="file" accept="application/json">
+          </label>
+          <button id="resetData" type="button" class="danger-button">Reset everything</button>
+        </div>
+        <div class="data-copy">
+          <p>Your tasks, notes, drawings, and focus time stay in this browser on this device.</p>
+          <p id="storageStatus">Waiting for local storage.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
